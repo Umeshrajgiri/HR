@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rules & Perks | NexHR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">Nex<span class="highlight">HR</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i> <span>Employees</span></a></li>
+                    <li><a href="attendance.html"><i class="fas fa-calendar-check"></i> <span>Attendance</span></a></li>
+                    <li><a href="payroll.html"><i class="fas fa-money-bill-wave"></i> <span>Payroll</span></a></li>
+                    <li><a href="leave.html"><i class="fas fa-umbrella-beach"></i> <span>Leave</span></a></li>
+                </ul>
+                <div class="nav-divider"></div>
+                <ul>
+                    <li class="active"><a href="rules.html"><i class="fas fa-book"></i> <span>Rules & Perks</span></a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                    <li><a href="login.html"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                    <h2>Rules & Perks</h2>
+                </div>
+                <div class="header-right">
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=E11E26&color=fff"
+                            alt="Profile">
+                        <span>Admin User</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <!-- Company Rules & Policies -->
+                <div class="settings-card settings-grid-full">
+                    <div class="settings-header">
+                        <h3><i class="fas fa-book" style="color:var(--primary); margin-right:8px;"></i> Company Rules & Policies</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 0.5rem;">Define leave policies and other company rules</p>
+                    </div>
+                    <div class="settings-body">
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem; display: block;">
+                                <i class="fas fa-calendar-alt" style="margin-right: 0.5rem; color: var(--primary);"></i>
+                                Leave Policy
+                            </label>
+                            <textarea id="leavePolicy" rows="6" placeholder="Enter leave policy details...&#10;Example:&#10;- Annual Leave: 20 days per year&#10;- Sick Leave: 10 days per year&#10;- Casual Leave: 5 days per year&#10;- Leave approval required from manager" 
+                                style="width: 100%; padding: 1rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem; display: block;">
+                                <i class="fas fa-gavel" style="margin-right: 0.5rem; color: var(--primary);"></i>
+                                Other Company Rules
+                            </label>
+                            <textarea id="companyRules" rows="6" placeholder="Enter other company rules and policies...&#10;Example:&#10;- Working hours: 9 AM to 6 PM&#10;- Attendance policy&#10;- Code of conduct&#10;- Dress code policy" 
+                                style="width: 100%; padding: 1rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+                        
+                        <div class="employee-edit-actions">
+                            <button type="button" id="saveCompanyRulesBtn" class="btn-primary" style="padding: 0.7rem 1.5rem; font-size: 0.9rem;">
+                                <i class="fas fa-save"></i> Save Rules
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Employee Perks & Benefits -->
+                <div class="settings-card settings-grid-full">
+                    <div class="settings-header">
+                        <h3><i class="fas fa-gift" style="color:var(--primary); margin-right:8px;"></i> Employee Perks & Benefits</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 0.5rem;">Define employee perks and benefits</p>
+                    </div>
+                    <div class="settings-body">
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem; display: block;">
+                                <i class="fas fa-star" style="margin-right: 0.5rem; color: var(--primary);"></i>
+                                Employee Benefits
+                            </label>
+                            <textarea id="employeeBenefits" rows="6" placeholder="Enter employee benefits details...&#10;Example:&#10;- Health Insurance Coverage&#10;- Provident Fund (PF)&#10;- Performance Bonuses&#10;- Training & Development Programs&#10;- Flexible Working Hours" 
+                                style="width: 100%; padding: 1rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+                        
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem; display: block;">
+                                <i class="fas fa-trophy" style="margin-right: 0.5rem; color: var(--primary);"></i>
+                                Employee Perks
+                            </label>
+                            <textarea id="employeePerks" rows="6" placeholder="Enter employee perks details...&#10;Example:&#10;- Free Lunch/Meals&#10;- Gym Membership&#10;- Transportation Allowance&#10;- Work from Home Options&#10;- Team Building Activities" 
+                                style="width: 100%; padding: 1rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+                        
+                        <div class="employee-edit-actions">
+                            <button type="button" id="savePerksBtn" class="btn-primary" style="padding: 0.7rem 1.5rem; font-size: 0.9rem;">
+                                <i class="fas fa-save"></i> Save Perks
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/rules.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
+

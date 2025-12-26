@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | NexHR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .settings-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .dashboard-content {
+            padding: 1.5rem;
+        }
+        
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .settings-grid-full {
+            grid-column: 1 / -1;
+        }
+        
+        @media (max-width: 1200px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .settings-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 0;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .settings-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .settings-header h3 {
+            font-size: 1.15rem;
+            color: var(--text-light);
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .settings-header p {
+            margin: 0;
+            font-size: 0.85rem;
+        }
+
+        .settings-body {
+            padding: 1.75rem;
+            flex: 1;
+        }
+
+        .form-section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+        }
+
+        .settings-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Employee Management Styles */
+        .employee-item {
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .employee-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(225, 30, 38, 0.1);
+        }
+        
+        .employee-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .employee-item-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .employee-avatar-small {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        
+        .employee-item-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .employee-detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        
+        .employee-detail-label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .employee-detail-value {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        
+        .employee-edit-form {
+            display: none;
+            margin-top: 1.25rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+        }
+        
+        .employee-edit-form.active {
+            display: block;
+        }
+        
+        .employee-edit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .employee-edit-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-dim);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">Nex<span class="highlight">HR</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i> <span>Employees</span></a></li>
+                    <li><a href="attendance.html"><i class="fas fa-calendar-check"></i> <span>Attendance</span></a></li>
+                    <li><a href="payroll.html"><i class="fas fa-money-bill-wave"></i> <span>Payroll</span></a></li>
+                    <li><a href="leave.html"><i class="fas fa-umbrella-beach"></i> <span>Leave</span></a></li>
+                </ul>
+                <div class="nav-divider"></div>
+                <ul>
+                    <li><a href="rules.html"><i class="fas fa-book"></i> <span>Rules & Perks</span></a></li>
+                    <li class="active"><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                    <li><a href="login.html"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                    <h2>Settings</h2>
+                </div>
+                <div class="header-right">
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=E11E26&color=fff"
+                            alt="Profile">
+                        <span>Admin User</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="settings-container">
+
+                    <form id="settingsForm">
+                        <!-- Top Row: General & Employee -->
+                        <div class="settings-grid">
+                            <!-- General Settings -->
+                            <div class="settings-card">
+                                <div class="settings-header">
+                                    <h3><i class="fas fa-building" style="color:var(--primary); margin-right:8px;"></i>
+                                        General Configuration</h3>
+                                </div>
+                                <div class="settings-body">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label>Company Name</label>
+                                        <div class="input-with-icon">
+                                            <i class="fas fa-building"></i>
+                                            <input type="text" id="companyName" value="NexHR Inc." required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Employee Configuration -->
+                            <div class="settings-card">
+                                <div class="settings-header">
+                                    <h3><i class="fas fa-users-cog" style="color:var(--secondary); margin-right:8px;"></i>
+                                        Employee Setup</h3>
+                                </div>
+                                <div class="settings-body">
+                                    <div class="form-group" style="margin-bottom: 1rem;">
+                                        <label>Staff ID Prefix</label>
+                                        <div class="input-with-icon">
+                                            <i class="fas fa-tag"></i>
+                                            <input type="text" id="staffIdPrefix" value="EMP"
+                                                placeholder="e.g. EMP, STAFF">
+                                        </div>
+                                        <small style="color:var(--text-dim); display:block; margin-top:0.4rem; font-size: 0.8rem;">Will generate IDs like EMP-001</small>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label>Auto-increment Start</label>
+                                        <div class="input-with-icon">
+                                            <i class="fas fa-sort-numeric-up"></i>
+                                            <input type="number" id="idStart" value="100">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Second Row: Payroll Configuration -->
+                        <div class="settings-grid">
+                            <div class="settings-card">
+                                <div class="settings-header">
+                                    <h3><i class="fas fa-file-invoice-dollar" style="color:#10b981; margin-right:8px;"></i>
+                                        Payroll Configuration</h3>
+                                </div>
+                                <div class="settings-body">
+                                    <div class="form-group" style="margin-bottom: 1rem;">
+                                        <label>Tax Rate (%)</label>
+                                        <div class="input-with-icon">
+                                            <i class="fas fa-percent"></i>
+                                            <input type="number" id="taxRate" value="10" min="0" max="50">
+                                        </div>
+                                        <small style="color: var(--text-dim); display: block; margin-top: 0.5rem; font-size: 0.85rem;">
+                                            Tax rate applied to gross salary for all employees
+                                        </small>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <label>Currency Symbol</label>
+                                        <div class="input-with-icon">
+                                            <select id="currency"
+                                                style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.8rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px;">
+                                                <option value="RS">RS - Rupees</option>
+                                                <option value="$">USD ($)</option>
+                                                <option value="€">EUR (€)</option>
+                                                <option value="£">GBP (£)</option>
+                                                <option value="₹">INR (₹)</option>
+                                            </select>
+                                        </div>
+                                        <small style="color: var(--text-dim); display: block; margin-top: 0.5rem; font-size: 0.85rem;">
+                                            <i class="fas fa-info-circle" style="margin-right: 0.3rem;"></i>
+                                            Note: Employee salaries are defined individually when adding/editing employees
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Role-wise Salary & Benefits Configuration - Full Width -->
+                        <div class="settings-card settings-grid-full">
+                            <div class="settings-header">
+                                <h3><i class="fas fa-user-tag" style="color:var(--primary); margin-right:8px;"></i>
+                                    Role-wise Salary & Benefits</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 0.5rem;">Define salary structure and benefits for each role</p>
+                            </div>
+                            <div class="settings-body">
+                                <div class="role-config-form-container" style="padding: 1.25rem; margin-bottom: 1.25rem;">
+                                    <div class="form-section-title" style="margin-bottom: 1rem; font-size: 0.85rem; padding-bottom: 0.5rem;">
+                                        <i class="fas fa-plus-circle" style="margin-right: 0.5rem;"></i>
+                                        Add New Role Configuration
+                                    </div>
+                                    <div class="role-form-grid" style="grid-template-columns: repeat(5, 1fr); gap: 1rem; margin-top: 0;">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.85rem; margin-bottom: 0.5rem;"><i class="fas fa-briefcase" style="margin-right: 0.4rem; color: var(--primary); font-size: 0.75rem;"></i>Role Name</label>
+                                            <div class="input-with-icon">
+                                                <i class="fas fa-briefcase" style="left: 1rem; font-size: 0.85rem;"></i>
+                                                <input type="text" id="roleName" placeholder="e.g. Developer" style="padding: 0.7rem 1rem 0.7rem 2.5rem; font-size: 0.9rem;">
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.85rem; margin-bottom: 0.5rem;"><i class="fas fa-coins" style="margin-right: 0.4rem; color: var(--success); font-size: 0.75rem;"></i>Base Salary</label>
+                                            <div class="input-with-icon">
+                                                <i class="fas fa-coins" style="left: 1rem; font-size: 0.85rem;"></i>
+                                                <input type="number" id="roleBaseSalary" placeholder="5000" min="0" style="padding: 0.7rem 1rem 0.7rem 2.5rem; font-size: 0.9rem;">
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.85rem; margin-bottom: 0.5rem;"><i class="fas fa-home" style="margin-right: 0.4rem; color: var(--secondary); font-size: 0.75rem;"></i>HRA (%)</label>
+                                            <div class="input-with-icon">
+                                                <i class="fas fa-home" style="left: 1rem; font-size: 0.85rem;"></i>
+                                                <input type="number" id="roleHRA" placeholder="20" min="0" max="100" style="padding: 0.7rem 1rem 0.7rem 2.5rem; font-size: 0.9rem;">
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.85rem; margin-bottom: 0.5rem;"><i class="fas fa-money-bill-wave" style="margin-right: 0.4rem; color: var(--warning); font-size: 0.75rem;"></i>Allowance</label>
+                                            <div class="input-with-icon">
+                                                <i class="fas fa-money-bill-wave" style="left: 1rem; font-size: 0.85rem;"></i>
+                                                <input type="number" id="roleAllowance" placeholder="500" min="0" style="padding: 0.7rem 1rem 0.7rem 2.5rem; font-size: 0.9rem;">
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.85rem; margin-bottom: 0.5rem;"><i class="fas fa-piggy-bank" style="margin-right: 0.4rem; color: var(--primary); font-size: 0.75rem;"></i>PF (%)</label>
+                                            <div class="input-with-icon">
+                                                <i class="fas fa-piggy-bank" style="left: 1rem; font-size: 0.85rem;"></i>
+                                                <input type="number" id="rolePF" placeholder="12" min="0" max="100" style="padding: 0.7rem 1rem 0.7rem 2.5rem; font-size: 0.9rem;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="button" id="addRoleConfigBtn" class="btn-primary" style="margin-top: 1rem; padding: 0.75rem 1.5rem; font-size: 0.9rem;">
+                                        <i class="fas fa-plus"></i> <span id="addRoleConfigBtnText">Add Role Configuration</span>
+                                    </button>
+                                </div>
+
+                                <div class="form-section-title" style="margin-top: 1.5rem; margin-bottom: 1rem; font-size: 0.85rem; padding-bottom: 0.5rem;">
+                                    <i class="fas fa-list" style="margin-right: 0.5rem;"></i>
+                                    Existing Role Configurations (<span id="roleConfigCount">0</span>)
+                                </div>
+                                <div id="roleConfigList" class="role-config-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem;">
+                                    <!-- Role configurations will be rendered here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Employee Management -->
+                        <div class="settings-card settings-grid-full">
+                            <div class="settings-header">
+                                <h3><i class="fas fa-users" style="color:var(--primary); margin-right:8px;"></i> Employee
+                                    Management</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 0.5rem;">Edit employee details, salary, and other information</p>
+                            </div>
+                            <div class="settings-body">
+                                <!-- Step 1: Select Department -->
+                                <div class="form-group" style="margin-bottom: 1.5rem;">
+                                    <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">
+                                        <i class="fas fa-building" style="margin-right: 0.5rem; color: var(--primary); font-size: 0.8rem;"></i>
+                                        Step 1: Select Department
+                                    </label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-building" style="left: 0.75rem; font-size: 0.85rem;"></i>
+                                        <select id="selectDeptForEdit" 
+                                            style="width: 100%; max-width: 400px; padding: 0.6rem 0.85rem 0.6rem 2.3rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem;">
+                                            <option value="">-- Select Department --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- Step 2: Select Employee (hidden until department is selected) -->
+                                <div class="form-group" id="employeeSelectContainer" style="margin-bottom: 1.5rem; display: none;">
+                                    <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">
+                                        <i class="fas fa-user" style="margin-right: 0.5rem; color: var(--primary); font-size: 0.8rem;"></i>
+                                        Step 2: Select Employee
+                                    </label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-user" style="left: 0.75rem; font-size: 0.85rem;"></i>
+                                        <select id="selectEmployeeForEdit" 
+                                            style="width: 100%; max-width: 400px; padding: 0.6rem 0.85rem 0.6rem 2.3rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem;">
+                                            <option value="">-- Select Employee --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- Step 3: Edit Form (hidden until employee is selected) -->
+                                <div id="employeeEditFormContainer" style="display: none;">
+                                    <div class="form-section-title" style="margin-top: 1.5rem; margin-bottom: 1rem; font-size: 0.85rem; padding-bottom: 0.5rem;">
+                                        <i class="fas fa-edit" style="margin-right: 0.5rem;"></i>
+                                        Edit Employee Details
+                                    </div>
+                                    <div id="employeeEditForm">
+                                        <!-- Edit form will be rendered here -->
+                                    </div>
+                                </div>
+                                
+                                <!-- Employee List -->
+                                <div class="form-section-title" style="margin-top: 2rem; margin-bottom: 1rem; font-size: 0.85rem; padding-bottom: 0.5rem;">
+                                    <i class="fas fa-list" style="margin-right: 0.5rem;"></i>
+                                    All Employees (<span id="totalEmployeesCount">0</span>)
+                                </div>
+                                <div id="employeeManagementList" style="max-height: 500px; overflow-y: auto;">
+                                    <!-- Employee list will be rendered here -->
+                                </div>
+                                
+                                <!-- Empty State -->
+                                <div id="employeeEmptyState" class="empty-state" style="display: none;">
+                                    <i class="fas fa-users"></i>
+                                    <p>No employees found</p>
+                                    <small>Add employees from the Employees page</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Employee Login Management -->
+                        <div class="settings-card settings-grid-full">
+                            <div class="settings-header">
+                                <h3><i class="fas fa-user-plus" style="color:var(--primary); margin-right:8px;"></i> Employee Login Management</h3>
+                                <p style="font-size: 0.85rem; color: var(--text-dim); margin-top: 0.5rem;">Create login IDs for employees with access control</p>
+                            </div>
+                            <div class="settings-body">
+                                <!-- Step 1: Select Employee -->
+                                <div class="form-group" style="margin-bottom: 1.5rem;">
+                                    <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; display: block;">
+                                        <i class="fas fa-user" style="margin-right: 0.5rem; color: var(--primary); font-size: 0.8rem;"></i>
+                                        Step 1: Select Employee
+                                    </label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-user" style="left: 0.75rem; font-size: 0.85rem;"></i>
+                                        <select id="selectEmployeeForLogin" 
+                                            style="width: 100%; max-width: 400px; padding: 0.6rem 0.85rem 0.6rem 2.3rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem;">
+                                            <option value="">-- Select Employee --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- Step 2: Create Login Credentials (hidden until employee is selected) -->
+                                <div id="employeeLoginFormContainer" style="display: none;">
+                                    <div class="form-section-title" style="margin-top: 1.5rem; margin-bottom: 1rem; font-size: 0.85rem; padding-bottom: 0.5rem;">
+                                        <i class="fas fa-key" style="margin-right: 0.5rem;"></i>
+                                        Create Login Credentials
+                                    </div>
+                                    
+                                    <div class="employee-edit-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.85rem;">Username <span style="color: var(--primary);">*</span></label>
+                                            <div class="input-with-icon">
+                                                <i class="fas fa-user" style="left: 0.75rem; font-size: 0.85rem;"></i>
+                                                <input type="text" id="empLoginUsername" placeholder="Enter username" 
+                                                    style="width: 100%; padding: 0.6rem 0.85rem 0.6rem 2.3rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem;">
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.85rem;">Password <span style="color: var(--primary);">*</span></label>
+                                            <div class="input-with-icon">
+                                                <i class="fas fa-lock" style="left: 0.75rem; font-size: 0.85rem;"></i>
+                                                <input type="password" id="empLoginPassword" placeholder="Enter password" 
+                                                    style="width: 100%; padding: 0.6rem 0.85rem 0.6rem 2.3rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem;">
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.85rem;">Access Level <span style="color: var(--primary);">*</span></label>
+                                            <div class="input-with-icon">
+                                                <i class="fas fa-shield-alt" style="left: 0.75rem; font-size: 0.85rem;"></i>
+                                                <select id="empLoginAccess" 
+                                                    style="width: 100%; padding: 0.6rem 0.85rem 0.6rem 2.3rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem;">
+                                                    <option value="Employee">Employee</option>
+                                                    <option value="Admin">Admin</option>
+                                                    <option value="Manager">Manager</option>
+                                                    <option value="HR">HR</option>
+                                                    <option value="Finance">Finance</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="employee-edit-actions">
+                                        <button type="button" id="createEmployeeLoginBtn" class="btn-primary" style="padding: 0.7rem 1.5rem; font-size: 0.9rem;">
+                                            <i class="fas fa-user-plus"></i> Create Login ID
+                                        </button>
+                                        <button type="button" onclick="resetEmployeeLoginForm()" class="btn-secondary" style="padding: 0.7rem 1.5rem; font-size: 0.9rem;">
+                                            <i class="fas fa-times"></i> Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- Selected Employee Login Info (shown when employee is selected) -->
+                                <div id="selectedEmployeeLoginInfo" style="display: none; margin-top: 1.5rem;">
+                                    <div class="form-section-title" style="margin-bottom: 1rem; font-size: 0.85rem; padding-bottom: 0.5rem;">
+                                        <i class="fas fa-info-circle" style="margin-right: 0.5rem;"></i>
+                                        Employee Login Information
+                                    </div>
+                                    <div id="employeeLoginInfoCard" style="padding: 1rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px;">
+                                        <!-- Employee login info will be rendered here -->
+                                    </div>
+                                </div>
+                                
+                                <!-- All Employee Logins List -->
+                                <div class="form-section-title" style="margin-top: 2rem; margin-bottom: 1rem; font-size: 0.85rem; padding-bottom: 0.5rem;">
+                                    <i class="fas fa-list" style="margin-right: 0.5rem;"></i>
+                                    All Employee Logins (<span id="totalLoginsCount">0</span>)
+                                </div>
+                                <div id="allEmployeeLoginsList" style="max-height: 500px; overflow-y: auto;">
+                                    <!-- All employee logins will be rendered here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Management -->
+                        <div class="settings-card">
+                            <div class="settings-header">
+                                <h3><i class="fas fa-user-shield" style="color:var(--primary); margin-right:8px;"></i> User
+                                    Management</h3>
+                            </div>
+                            <div class="settings-body">
+                                <div class="form-group"
+                                    style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:1rem; align-items:end; margin-bottom: 1rem;">
+                                    <div>
+                                        <label style="font-size: 0.85rem;">Username</label>
+                                        <div class="input-with-icon">
+                                            <i class="fas fa-user"></i>
+                                            <input type="text" id="newUsername" placeholder="e.g. john" style="padding: 0.7rem 1rem 0.7rem 2.8rem; font-size: 0.9rem;">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.85rem;">Password</label>
+                                        <div class="input-with-icon">
+                                            <i class="fas fa-lock"></i>
+                                            <input type="password" id="newPassword" placeholder="******" style="padding: 0.7rem 1rem 0.7rem 2.8rem; font-size: 0.9rem;">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.85rem;">Role</label>
+                                        <div class="input-with-icon">
+                                            <select id="newRole"
+                                                style="width: 100%; padding: 0.7rem 1rem 0.7rem 2.8rem; background: var(--bg-dark); border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem;">
+                                                <option value="Employee">Employee</option>
+                                                <option value="Admin">Admin</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" id="addUserBtn" class="btn-primary" style="margin-bottom: 1.25rem; padding: 0.75rem 1.5rem; font-size: 0.9rem;">Add
+                                    User</button>
+
+                                <div class="form-section-title" style="margin-top: 1.25rem; margin-bottom: 1rem; font-size: 0.85rem; padding-bottom: 0.5rem;">Existing Users</div>
+                                <ul id="userList" style="list-style: none; padding: 0;">
+                                    <!-- User list populated by JS -->
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="settings-actions">
+                            <button type="button" class="btn-secondary"
+                                onclick="window.location.href='dashboard.html'">Cancel</button>
+                            <button type="submit" class="btn-primary" style="min-width: 150px;">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+    </div>
+    </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+
+</html>

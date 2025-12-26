@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Management | NexHR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .leave-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .balance-card {
+            background: var(--bg-card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .balance-num {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0.5rem 0;
+        }
+
+        .form-section {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .status-approved {
+            background: #dcfce7;
+            color: #166534;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .admin-actions button {
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            margin-right: 0.5rem;
+        }
+
+        .btn-approve {
+            background: #dcfce7;
+            color: #166534;
+            border-color: #bbf7d0;
+        }
+
+        .btn-reject {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #fecaca;
+        }
+
+        .btn-approve:hover {
+            background: #bbf7d0;
+        }
+
+        .btn-reject:hover {
+            background: #fecaca;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">Nex<span class="highlight">HR</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i> <span>Employees</span></a></li>
+                    <li><a href="attendance.html"><i class="fas fa-calendar-check"></i> <span>Attendance</span></a></li>
+                    <li><a href="payroll.html"><i class="fas fa-money-bill-wave"></i> <span>Payroll</span></a></li>
+                    <li class="active"><a href="leave.html"><i class="fas fa-umbrella-beach"></i> <span>Leave</span></a>
+                    </li>
+                </ul>
+                <div class="nav-divider"></div>
+                <ul>
+                    <li><a href="rules.html"><i class="fas fa-book"></i> <span>Rules & Perks</span></a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                    <li><a href="login.html"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                    <h2>Leave Management</h2>
+                </div>
+                <div class="header-right">
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=E11E26&color=fff"
+                            alt="Profile">
+                        <span>Admin User</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+
+                <!-- Balance Stats -->
+                <div class="leave-stats">
+                    <div class="balance-card">
+                        <h4>Annual Leave</h4>
+                        <div class="balance-num" id="balAnnual">0</div>
+                        <p class="text-dim">Days Remaining</p>
+                    </div>
+                    <div class="balance-card">
+                        <h4>Sick Leave</h4>
+                        <div class="balance-num" id="balSick">0</div>
+                        <p class="text-dim">Days Remaining</p>
+                    </div>
+                    <div class="balance-card">
+                        <h4>Casual Leave</h4>
+                        <div class="balance-num" id="balCasual">0</div>
+                        <p class="text-dim">Days Remaining</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-split" style="grid-template-columns: 1fr 1fr;">
+
+                    <!-- New Request Form -->
+                    <div class="form-section">
+                        <h3>Request Leave</h3>
+                        <br>
+                        <form id="leaveRequestForm">
+                            <div class="form-group">
+                                <label>Leave Type</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-list"></i>
+                                    <select id="leaveType"
+                                        style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.8rem; background: #f9fafb; border: 1px solid var(--border); border-radius: 8px;">
+                                        <option value="Annual">Annual Leave</option>
+                                        <option value="Sick">Sick Leave</option>
+                                        <option value="Casual">Casual Leave</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group" style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                                <div>
+                                    <label>Start Date</label>
+                                    <input type="date" id="startDate" required
+                                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px;">
+                                </div>
+                                <div>
+                                    <label>End Date</label>
+                                    <input type="date" id="endDate" required
+                                        style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px;">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Reason</label>
+                                <textarea id="reason" rows="3"
+                                    style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px;"></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary" style="width:100%">Submit Request</button>
+                        </form>
+                    </div>
+
+                    <!-- Admin Approval Queue -->
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3>Staff Leave Approvals</h3>
+                        </div>
+                        <div class="table-container">
+                            <table class="log-table" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Type</th>
+                                        <th>Dates</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="approvalQueueBody">
+                                    <!-- Rendered by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-header" style="border-top: 1px solid var(--border); margin-top:1rem;">
+                            <h3>My History</h3>
+                        </div>
+                        <div class="table-container">
+                            <table class="log-table" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Dates</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="myHistoryBody">
+                                    <!-- Rendered by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="js/leave.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

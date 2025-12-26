@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll | NexHR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .payroll-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .payroll-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .status-unpaid {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .status-paid {
+            background: #dcfce7;
+            color: #166534;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        /* Payslip Modal */
+        .payslip-container {
+            border: 1px solid var(--border);
+            padding: 2rem;
+            background: white;
+            color: black;
+            /* Ensure black text for print */
+        }
+
+        .payslip-header {
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .payslip-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .salary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        .salary-table th,
+        .salary-table td {
+            padding: 0.8rem;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        .salary-table tr:last-child th,
+        .salary-table tr:last-child td {
+            border-top: 2px solid #333;
+            border-bottom: none;
+            font-weight: 700;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #payslipModal,
+            #payslipModal * {
+                visibility: visible;
+            }
+
+            #payslipModal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: white;
+                padding: 0;
+            }
+
+            .modal-content {
+                box-shadow: none;
+                border: none;
+                width: 100%;
+            }
+
+            .close-modal,
+            .btn-primary {
+                display: none;
+            }
+        }
+
+        /* Payslip Modal Overlay */
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            /* Semi-transparent overlay */
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex !important;
+            /* Force display when active */
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">Nex<span class="highlight">HR</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+                    <li><a href="employees.html"><i class="fas fa-users"></i><span>Employees</span></a></li>
+                    <li><a href="attendance.html"><i class="fas fa-calendar-check"></i><span>Attendance</span></a>
+                    </li>
+                    <li class="active"><a href="payroll.html"><i
+                                class="fas fa-money-bill-wave"></i><span>Payroll</span></a></li>
+                    <li><a href="leave.html"><i class="fas fa-umbrella-beach"></i><span>Leave</span></a></li>
+                </ul>
+                <div class="nav-divider"></div>
+                <ul>
+                    <li><a href="rules.html"><i class="fas fa-book"></i> <span>Rules & Perks</span></a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                    <li><a href="login.html"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left"><button id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                    <h2>Payroll</h2>
+                </div>
+                <div class="header-right">
+                    <div class="user-profile"><img
+                            src="https://ui-avatars.com/api/?name=Admin+User&background=E11E26&color=fff"
+                            alt="Profile"><span>Admin User</span></div>
+                </div>
+            </header>
+            <div class="dashboard-content">
+                <div class="payroll-header">
+                    <h3>Payroll for <span id="currentMonth">October 2024</span></h3><button class="btn-primary"
+                        id="runPayrollBtn"><i class="fas fa-bolt"></i>Process Payroll</button>
+                </div>
+                <div class="payroll-summary">
+                    <div class="balance-card">
+                        <h4>Total Cost</h4>
+                        <div class="balance-num" id="totalCost">RS 0</div>
+                        <p class="text-dim">Estimated Monthly</p>
+                    </div>
+                    <div class="balance-card">
+                        <h4>Employees</h4>
+                        <div class="balance-num" id="totalEmpPayroll">0</div>
+                        <p class="text-dim">Active Staff</p>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="table-container">
+                        <table class="log-table" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Role</th>
+                                    <th>Base Salary</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payrollTableBody">
+                                <!-- Rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- Payslip Modal -->
+    <div class="modal" id="payslipModal">
+        <div class="modal-content" style="width: 600px;">
+            <div class="modal-header">
+                <h2>Payslip View</h2><button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="payslip-container" id="printablePayslip">
+                <div class="payslip-header">
+                    <h2>NexHR Inc.</h2>
+                    <p>123 Business Park,
+                        Tech City</p>
+                    <h3>Salary Slip for <span id="slipMonth">October 2024</span></h3>
+                </div>
+                <div class="payslip-details">
+                    <div>
+                        <p><strong>Employee Name:</strong><span id="slipName">John Doe</span></p>
+                        <p><strong>Role:</strong><span id="slipRole">Developer</span></p>
+                        <p><strong>Department:</strong><span id="slipDept">Engineering</span></p>
+                    </div>
+                    <div style="text-align:right">
+                        <p><strong>Payslip #:</strong><span id="slipId">INV-001</span></p>
+                        <p><strong>Paid Date:</strong><span id="slipDate">Oct 30,
+                                2024</span></p>
+                    </div>
+                </div>
+                <table class="salary-table">
+                    <thead>
+                        <tr>
+                            <th>Earnings</th>
+                            <th style="text-align:right">Amount</th>
+                            <th>Deductions</th>
+                            <th style="text-align:right">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Basic Salary</td>
+                            <td style="text-align:right" id="earnBasic">RS 5,000</td>
+                            <td>Tax (10%)</td>
+                            <td style="text-align:right" id="dedTax">RS 500</td>
+                        </tr>
+                        <tr>
+                            <td>HRA (20%)</td>
+                            <td style="text-align:right" id="earnHRA">RS 1,000</td>
+                            <td>Provident Fund</td>
+                            <td style="text-align:right" id="dedPF">RS 200</td>
+                        </tr>
+                        <tr>
+                            <td>Allowance</td>
+                            <td style="text-align:right" id="earnAllow">RS 500</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th>Gross Earnings</th>
+                            <th style="text-align:right" id="valGross">RS 6,500</th>
+                            <th>Total Deductions</th>
+                            <th style="text-align:right" id="valDed">RS 700</th>
+                        </tr>
+                        <tr style="background:#f8f9fa;">
+                            <th colspan="2" style="font-size:1.2rem">NET PAY</th>
+                            <th colspan="2" style="text-align:right; font-size:1.2rem; color:var(--primary)"
+                                id="valNet">RS 5,800</th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top:2rem; text-align:right"><button class="btn-primary" onclick="window.print()"><i
+                        class="fas fa-print"></i>Print Payslip</button></div>
+        </div>
+    </div>
+    <script src="js/payroll.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

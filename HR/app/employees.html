@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employees | NexHR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Nepali Datepicker CSS -->
+    <link rel="stylesheet" href="https://nepalidatepicker.sajanmaharjan.com.np/v5/nepali.datepicker/css/nepali.datepicker.v5.0.6.min.css" type="text/css">
+    <style>
+        /* Employee specific styles */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .table-container {
+            background: var(--bg-card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: #f9fafb;
+            padding: 1rem 1.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .employee-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .employee-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--secondary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-leave {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: flex-end;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            width: 400px;
+            height: 100%;
+            padding: 2rem;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.3s ease-out;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        .modal-content form {
+            flex: 1;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-dim);
+        }
+        
+        #customRole {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">Nex<span class="highlight">HR</span></div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                    <li class="active"><a href="employees.html"><i class="fas fa-users"></i> <span>Employees</span></a>
+                    </li>
+                    <li><a href="attendance.html"><i class="fas fa-calendar-check"></i> <span>Attendance</span></a></li>
+                    <li><a href="payroll.html"><i class="fas fa-money-bill-wave"></i> <span>Payroll</span></a></li>
+                    <li><a href="leave.html"><i class="fas fa-umbrella-beach"></i> <span>Leave</span></a></li>
+                </ul>
+                <div class="nav-divider"></div>
+                <ul>
+                    <li><a href="rules.html"><i class="fas fa-book"></i> <span>Rules & Perks</span></a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+                    <li><a href="login.html"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                    <h2>Employees</h2>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="employeeSearch" placeholder="Search employees...">
+                    </div>
+                    <div class="user-profile">
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=E11E26&color=fff"
+                            alt="Profile">
+                        <span>Admin User</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="page-header">
+                    <h3>All Employees (<span id="totalCount">0</span>)</h3>
+                    <button class="btn-primary" id="openAddModal"><i class="fas fa-plus"></i> Add Employee</button>
+                </div>
+
+                <div class="table-container">
+                    <table id="employeesTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Department</th>
+                                <th>Joining Date</th>
+                                <th>Salary</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Employee Modal -->
+    <div class="modal" id="addEmployeeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Employee</h2>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="addEmployeeForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="fullName" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-briefcase"></i>
+                        <select id="role" required
+                            style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.8rem; background: #f9fafb; border: 1px solid var(--border); border-radius: 8px;">
+                            <option value="">Select Role or Enter Custom</option>
+                        </select>
+                    </div>
+                    <div style="margin-top: 0.5rem;">
+                        <input type="text" id="customRole" placeholder="Or enter custom role name" 
+                            style="width: 100%; padding: 0.5rem; background: #f9fafb; border: 1px solid var(--border); border-radius: 6px; font-size: 0.9rem;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Department</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-building"></i>
+                        <select id="department"
+                            style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.8rem; background: #f9fafb; border: 1px solid var(--border); border-radius: 8px;">
+                            <option>Engineering</option>
+                            <option>Operations</option>
+                            <option>Marketing</option>
+                            <option>HR</option>
+                            <option>Finance</option>
+                            <option>Sales</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Joining Date (Nepali Calendar)</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                        <input type="text" id="joiningDate" class="nepali-date" placeholder="Select Nepali Date" required readonly>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                    <h4 style="margin-bottom: 1rem; font-size: 1rem; color: var(--text-light);">
+                        <i class="fas fa-coins" style="margin-right: 0.5rem; color: var(--success);"></i>Salary & Benefits
+                    </h4>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-list-alt" style="margin-right: 0.5rem; color: var(--primary);"></i>
+                            Select Salary Template or Define Custom
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-briefcase"></i>
+                            <select id="salaryTemplate"
+                                style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.8rem; background: #f9fafb; border: 1px solid var(--border); border-radius: 8px;">
+                                <option value="">-- Select Role Template or Define Custom --</option>
+                            </select>
+                        </div>
+                        <small style="color: var(--text-dim); display: block; margin-top: 0.5rem; font-size: 0.85rem;">
+                            <i class="fas fa-info-circle" style="margin-right: 0.3rem;"></i>
+                            Choose a role template to auto-fill salary fields, or select "Custom" to enter manually
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Base Salary (RS) <span style="color: var(--primary);">*</span></label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-coins"></i>
+                            <input type="number" id="baseSalary" placeholder="Enter base salary" min="0" required>
+                        </div>
+                        <small style="color: var(--text-dim); display: block; margin-top: 0.4rem; font-size: 0.85rem;">
+                            Salary must be defined for each employee
+                        </small>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>HRA (%)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-home"></i>
+                                <input type="number" id="hra" placeholder="Enter HRA %" min="0" max="100">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>PF (%)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-piggy-bank"></i>
+                                <input type="number" id="pf" placeholder="Enter PF %" min="0" max="100">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Allowance (RS)</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <input type="number" id="allowance" placeholder="Enter allowance amount" min="0">
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary btn-block">Add Employee</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Nepali Datepicker JavaScript -->
+    <script src="https://nepalidatepicker.sajanmaharjan.com.np/v5/nepali.datepicker/js/nepali.datepicker.v5.0.6.min.js" type="text/javascript"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
